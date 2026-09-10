@@ -1,0 +1,101 @@
+---
+title: "lista05"
+author: "Lucas Goes"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(DBI)
+library(RSQLite)
+con <- dbConnect(SQLite(), "me315 (1).sqlite")
+condemo <- dbConnect(SQLite(), "demo1.sqlite")
+```
+
+## 1
+
+```{sql connection=con}
+SELECT PNAME, ACRES, ACRES * 1.2 FROM PRESERVE
+```
+
+## 2 
+
+```{sql connection=con}
+SELECT PNAME, ACRES, ACRES / 3.0 FROM PRESERVE
+```
+
+## 3 
+
+```{sql connection=con}
+SELECT PNAME, FEE, (FEE + 50) / 2.0 FROM PRESERVE
+```
+
+## 4
+
+```{sql connection=con}
+SELECT AVG(ACRES), MIN(ACRES), MAX(ACRES) FROM PRESERVE
+```
+
+## 5
+
+```{sql connection=con}
+SELECT MIN(PNAME) FROM PRESERVE
+```
+
+## 6
+
+```{sql connection=con}
+SELECT COUNT(DISTINCT FEE) FROM PRESERVE
+WHERE FEE <> 0
+```
+
+## 7
+
+```{sql connection=con}
+SELECT COUNT(DISTINCT PNAME), COUNT(PNAME) FROM PRESERVE 
+```
+
+## 8 
+
+```{sql connection=con}
+SELECT AVG(0.02 * ACRES) FROM PRESERVE
+WHERE STATE = "AZ"
+```
+
+## 9 
+
+```{sql connection=con}
+SELECT ENO, ENAME, SALARY AS OLDSALARY, SALARY * 1.2 AS NEWSALARY FROM EMPLOYEE
+```
+
+## 10
+
+```{sql connection=con}
+SELECT ENO, ENAME, SALARY AS OLDSALARY, SALARY * 1.2 AS NEWSALARY FROM EMPLOYEE
+WHERE NEWSALARY > 2000
+```
+
+## 11
+
+```{sql connection=con}
+SELECT SUM(SALARY), AVG(SALARY), MAX(SALARY), MIN(SALARY) FROM EMPLOYEE
+```
+
+## 12
+
+```{sql connection=con}
+SELECT COUNT(*) FROM EMPLOYEE
+WHERE DNO = 20
+```
+
+## 13
+
+```{sql connection=con}
+SELECT COUNT(DISTINCT DNO) FROM EMPLOYEE
+WHERE ENAME <> ""
+```
+
+```{r}
+Sys.setenv(TZ = "America/Sao_Paulo")
+Sys.time()
+```
