@@ -1,0 +1,91 @@
+---
+title: "lab06"
+format: html
+editor: visual
+---
+
+```{r}
+library(DBI)
+library(RSQLite)
+library(dplyr)
+```
+
+## 1
+
+```{r}
+path <- getwd()
+fname <- file.path(path, "disco.db")
+```
+
+## 2
+
+```{r}
+conn <- dbConnect(RSQLite::SQLite(), fname)
+```
+
+## 3
+
+```{r}
+dbListTables(conn)
+```
+
+## 4
+
+```{r}
+dbListFields(conn, "customers")
+```
+
+## 5 
+
+```{r}
+customers <- dbGetQuery(conn, "SELECT * FROM customers")
+```
+
+59 CLIENTES
+
+## 6
+
+```{sql, connection=conn}
+SELECT DISTINCT COUNTRY FROM CUSTOMERS
+```
+
+24 PAÍSES DIFERENTES
+
+## 7
+
+```{sql, connection=conn}
+SELECT COUNTRY, COUNT(*) AS TOTAL_CLIENTES FROM CUSTOMERS
+GROUP BY COUNTRY
+ORDER BY TOTAL_CLIENTES DESC
+```
+
+## 8
+
+```{sql, connection=conn}
+SELECT COUNTRY, COUNT(*) AS TOTAL_CLIENTES FROM CUSTOMERS
+GROUP BY COUNTRY
+ORDER BY TOTAL_CLIENTES DESC
+LIMIT 5
+```
+
+## 9
+
+```{sql, connection=conn}
+SELECT COUNTRY FROM CUSTOMERS
+WHERE COUNTRY LIKE "______"
+```
+
+## 10
+
+?
+
+## 11
+
+```{r}
+dbDisconnect(conn)
+```
+
+```{r}
+Sys.setenv(TZ = "America/Sao_Paulo")
+Sys.time()
+```
