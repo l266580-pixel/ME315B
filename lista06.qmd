@@ -1,0 +1,84 @@
+---
+title: "lista06"
+author: "Lucas Goes 266580"
+format: pdf
+editor: visual
+---
+
+```{r}
+library('DBI')
+library('RSQLite')
+knitr::opts_chunk$set(max.print = Inf)
+con <- dbConnect(RSQLite::SQLite(), "purchase.sqlite")
+```
+
+```{sql connection=con}
+SELECT * FROM PURCHASE
+```
+
+## 1
+
+```{sql connection=con}
+SELECT PNO, SUM(COST) AS "CUSTO TOTAL" FROM PURCHASE
+GROUP BY PNO
+```
+
+## 2
+
+```{sql connection=con}
+SELECT ENO, SUM(COST) AS "CUSTO TOTAL" FROM PURCHASE
+GROUP BY ENO
+```
+
+## 3
+
+```{sql connection=con}
+SELECT PJNO, ENO, SUM(COST) AS "CUSTO TOTAL" FROM PURCHASE
+GROUP BY PJNO, ENO
+ORDER BY PJNO, ENO
+```
+
+## 4
+
+```{sql connection=con}
+SELECT PNO, SNO, SUM(COST) AS 'CUSTO TOTAL' FROM PURCHASE
+GROUP BY PNO, SNO
+ORDER BY PNO, SNO
+```
+
+## 5
+
+```{sql connection=con}
+SELECT PJNO, ENO, SNO, SUM(COST) AS "CUSTO TOTAL" FROM PURCHASE
+GROUP BY PJNO, ENO, SNO
+ORDER BY PJNO, ENO, SNO
+```
+
+## 6
+
+```{sql connection=con}
+SELECT PNO, ENO, SNO, SUM(COST) AS "CUSTO TOTAL" FROM PURCHASE
+GROUP BY PNO, ENO, SNO
+ORDER BY PNO, ENO, SNO
+```
+
+## 7
+
+```{sql connection=con}
+SELECT PJNO, SNO, ENO, SUM(COST) AS "CUSTO TOTAL" FROM PURCHASE
+WHERE PJNO <> "PJ2"
+GROUP BY PJNO, SNO, ENO
+```
+
+## 8
+
+```{sql connection=con}
+SELECT PNO, SNO, ENO, SUM(COST) AS CUSTO_TOTAL FROM PURCHASE
+GROUP BY PNO, SNO, ENO
+HAVING CUSTO_TOTAL > 2000
+```
+
+```{r}
+Sys.setenv(TZ = "America/Sao_Paulo")
+Sys.time()
+```
