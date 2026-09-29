@@ -1,0 +1,130 @@
+---
+title: "lista07_Goes"
+author: "Lucas Goes 266580"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(DBI)
+library(RSQLite)
+con <- dbConnect(RSQLite::SQLite(), "me315.sqlite")
+```
+
+```{sql connection=con}
+SELECT * FROM PRESERVE
+```
+
+```{sql connection=con}
+SELECT * FROM EMPLOYEE
+```
+
+## 1
+
+```{sql connection=con}
+SELECT STATE, MIN(ACRES) AS "MIN ACRES" FROM PRESERVE
+GROUP BY STATE
+```
+
+## 2
+
+```{sql connection=con}
+SELECT STATE, MAX(ACRES) AS "MAX ACRES" FROM PRESERVE
+WHERE ACRES < 10000
+GROUP BY STATE
+```
+
+## 3
+
+```{sql connection=con}
+SELECT STATE, MAX(ACRES) AS MAX_ACRES FROM PRESERVE
+WHERE ACRES < 10000
+GROUP BY STATE
+ORDER BY MAX_ACRES DESC
+```
+
+## 4
+
+```{sql connection=con}
+SELECT STATE, MAX(ACRES) AS MAX_ACRES FROM PRESERVE
+GROUP BY STATE
+HAVING MAX_ACRES < 25000
+```
+
+## 5
+
+```{sql connection=con}
+SELECT STATE, MIN(ACRES) AS MIN_ACRES FROM PRESERVE 
+GROUP BY STATE
+HAVING MIN_ACRES < 100
+```
+
+## 6
+
+```{sql connection=con}
+SELECT STATE, PNAME, MAX(ACRES) AS MAX_ACRES FROM PRESERVE 
+WHERE ACRES > 1000
+GROUP BY STATE 
+HAVING MAX_ACRES < 25000
+```
+
+## 7
+
+```{sql connection=con}
+SELECT STATE, SUM(ACRES) AS TOTAL_ACRES FROM PRESERVE 
+GROUP BY STATE
+HAVING TOTAL_ACRES BETWEEN 10000 AND 50000
+```
+
+## 8
+
+```{sql connection=con}
+SELECT STATE, AVG(ACRES) AS MEAN_ACRES FROM PRESERVE
+GROUP BY STATE
+ORDER BY MEAN_ACRES DESC
+LIMIT 1
+```
+
+## 9
+
+```{sql connection=con}
+SELECT DNO, AVG(SALARY) AS MEAN_SALARY FROM EMPLOYEE
+GROUP BY DNO
+```
+
+## 10
+
+```{sql connection=con}
+SELECT DNO, SUM(SALARY) AS TOTAL_SALARY, MAX(SALARY) AS MAX_SALARY, MIN(SALARY) AS MIN_SALARY FROM EMPLOYEE
+GROUP BY DNO
+```
+
+## 11
+
+```{sql connection=con}
+SELECT DNO, COUNT(ENAME) AS DNO_EMPLOYEES FROM EMPLOYEE
+WHERE DNO <> 40
+GROUP BY DNO
+```
+
+## 12
+
+```{sql connection=con}
+SELECT DNO, COUNT(ENAME) AS DNO_EMPLOYEES FROM EMPLOYEE
+GROUP BY DNO
+HAVING DNO_EMPLOYEES > 2
+```
+
+## 13
+
+```{sql connection=con}
+SELECT STATE, SUM(ACRES) AS TOTAL FROM PRESERVE
+GROUP BY STATE
+UNION ALL
+SELECT "TOTAL", SUM(ACRES) FROM PRESERVE
+```
+
+```{r}
+Sys.setenv(TZ = "America/Sao_Paulo")
+Sys.time()
+```
