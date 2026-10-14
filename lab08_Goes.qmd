@@ -1,0 +1,80 @@
+---
+title: "lab08_Goes"
+format: pdf
+editor: visual
+engine: knitr
+---
+
+```{python}
+import os
+import polars as pl
+
+base_dir = r"\\smb\ra266580\Documentos\ME315"
+
+basics_path = os.path.join(base_dir, "title.basics0.tsv.gz")
+ratings_path = os.path.join(base_dir, "title.ratings.tsv.gz")
+principals_path = os.path.join(base_dir, "title.principals0.tsv.gz")
+
+basics_lazy = pl.scan_csv(basics_path, separator="\t", null_values=r"\N").select(["tconst", "titleType", "primaryTitle", "genres"])
+ratings_lazy = pl.scan_csv(ratings_path, separator="\t", null_values=r"\N").select(["tconst", "averageRating", "numVotes"])
+principals_lazy = pl.scan_csv(principals_path, separator="\t", null_values=r"\N").select(["tconst", "nconst", "category"])
+```
+
+## 1
+
+```{python}
+q1 = (
+  basics_lazy.filter(pl.col("titleType") == "movie")
+  .join(ratings_lazy, on="tconst")
+  .sort(["averageRating", "numVotes"], descending=[True, True])
+  .select(["primaryTitle", "averageRating", "numVotes"])
+  .limit(5)
+  .collect()
+)
+
+print(q1)
+```
+
+## 2
+
+```{python}
+q2 = (
+    basics_lazy.filter(pl.col("titleType") == "movie")
+    .join(ratings_lazy, on="tconst")
+    .filter(pl.col("averageRating") > 8)
+    .with_columns(pl.col("genres").str.split(","))
+    .explode("genres")
+    .filter(pl.col("genres").is_not_null())
+    .group_by("genres")
+    .len()
+    .sort("len", descending=True)
+    .limit(1)
+    .collect()
+)
+
+print(q2)
+```
+
+## 3
+
+```{python}
+principals_atores = principals_lazy.filter(
+    pl.col("category").is_in(["actor", "actress"])
+)
+
+q3 = (
+    basics_lazy.filter(pl.col("titleType") == "movie")
+    .join(ratings_lazy, on="tconst")
+    .filter(pl.col("averageRating") > 7.5)
+    .join(principals_atores, on="tconst")
+    .group_by("nconst")
+    .len()
+    .sort("len", descending=True)
+    .limit(3)
+    .collect()
+)
+
+print(q3)
+```
+
+Os atores são , respectivamente: Dr. Rajkumar, Mohan Babu e T. N. Balakrishna.
