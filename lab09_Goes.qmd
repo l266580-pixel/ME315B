@@ -1,0 +1,95 @@
+---
+title: "lab09_Goes"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(reticulate)
+py_install(c("polars", "plotnine"))
+```
+
+## 1
+
+```{python}
+import polars as pl
+df_diamonds = pl.read_csv("diamonds.csv.gz")
+df_diamonds
+```
+
+## 2
+
+```{python}
+from plotnine import ggplot, aes, geom_point, geom_smooth, labs, theme_minimal
+from plotnine.data import diamonds
+
+p1 = (
+    ggplot(diamonds, aes(x = 'carat', y = 'price'))
+    + geom_point(alpha = 0.1, color = 'blue')
+    + geom_smooth(method = 'lm', color = 'red', se = False)
+    + labs(
+        title = 'Relação entre Peso e Preço de Diamantes',
+        x = 'Peso (quilates)',
+        y = 'Preço (USD)'
+    )
+    + theme_minimal()
+)
+
+print(p1)
+```
+
+Produzi um gráfico de dispersão com reta de regressão para apontar a relação entre peso e preço dos diamantes. para facilitar a vizualização das muitas observações, deixei os pontos suficientemente transparentes e usei cores contrastantes entre a reta e os pontos. Também mostrei com clareza as variáveis de cada eixo e escolhi um título adequado.
+
+## 3
+
+```{python}
+from plotnine import ggplot, aes, geom_point, geom_smooth, facet_wrap, labs, theme_minimal
+from plotnine.data import diamonds
+
+p2 = (
+    ggplot(diamonds, aes(x = 'carat', y = 'price', color = 'cut'))
+    + geom_point(alpha = 0.1)
+    + geom_smooth(method = 'lm', se = False)
+    + facet_wrap('~cut')
+    + labs(
+        title = 'Relação Peso vs Preço por Qualidade de Corte',
+        x = 'Peso (quilates)',
+        y = 'Preço (USD)',
+        color = 'Corte'
+    )
+    + theme_minimal()
+)
+
+print(p2)
+```
+
+Pode se observar que, independentemente da qualidade do corte dos diamantes, os pesos dos diamantes sempre vão torná-los mais caros. Então a relação identificada na questão anterior é a mesma para qualquer qualidade de corte.
+
+## 4
+
+```{python}
+from plotnine import ggplot, aes, geom_smooth, facet_grid, labs, theme_minimal
+from plotnine.data import diamonds
+
+p4 = (
+    ggplot(diamonds, aes(x = 'carat', y = 'price', color = 'color'))
+    + geom_smooth(method = 'lm', se = False, size = 0.8) 
+    + facet_grid('cut ~ clarity')
+    + labs(
+        title = 'Relação Preço vs Peso por Corte, Clareza e Cor',
+        x = 'Peso (quilates)',
+        y = 'Preço (USD)',
+        color = 'Cor'
+    )
+    + theme_minimal()
+)
+
+print(p4)
+```
+
+A maior dificuldade foi cruzar as 3 variáveis (cor, qualidade de corte e clareza). Fazer um gráfico de dispersão, nesse caso, ia poluir demais o gráfico. Fiz o suficiente para que ele ficasse possível de interpretar. Através das retas do gráfico, pode-se notar que a relação observada entre preço e peso nas outras questões se mantém em qualquer caso analisado.
+
+```{r}
+Sys.setenv(TZ = "America/Sao_Paulo")
+Sys.time()
+```
